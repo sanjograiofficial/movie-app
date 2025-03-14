@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Search from "./components/Search";
+import Spinner from "./components/Spinner";
+import MovieCard from "./components/MovieCard";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -26,8 +28,7 @@ const App = () => {
     try {
       const response = await fetch(endpoint, API_OPTIONS);
       if (!response.ok) throw new Error("Error fetching data.");
-      console.log(response);
-      const data = await response.json;
+      const data = await response.json();
 
       if (data.Response === "False") {
         setErrorMsg(data.Error || "Failed to fetch");
@@ -59,15 +60,15 @@ const App = () => {
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </header>
         <section className="all-movies">
-          <h1>All Movies</h1>
+          <h1 className="mt-[40px]">All Movies</h1>
           {isLoading ? (
-            <p>Loading...</p>
+            <Spinner />
           ) : errorMsg ? (
             <p className="text-red-500 text-3xl">{errorMsg}</p>
           ) : (
             <ul>
               {movieList.map((movie) => (
-                <p className="text-white">{movie.title}</p>
+                <MovieCard key={movie.id} movie={movie} />
               ))}
             </ul>
           )}
